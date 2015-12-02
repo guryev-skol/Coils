@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if IE 8]> <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Materials | MIT Learning Modules</title>
+
+    <!-- STYLES -->
+    <link rel="stylesheet" href="../common/css/libraries.css?rel=fa15p1e1">
+    <link rel="stylesheet" href="../common/css/app.css?rel=fa15p1e1">
+
+    <!-- MODERNIZR -->
+    <!-- <script src="../common/javascript/foundation/modernizr.foundation.js?rel=fa15p1e1"></script> -->
+    <script src="../common/javascript/modernizr.js?rel=fa15p1e1"></script>
+    <script src="../common/javascript/modernizr-lmod.js?rel=fa15p1e1"></script>
+
+    <!-- Tiny MCE -->
+    <!--<script src="https://tinymce.cachefly.net/4.0/tinymce.min.js?rel=fa15p1e1"></script>-->
+
+    <!--[if lte IE 9]> <script src="../common/javascript/html5shiv.js?rel=fa15p1e1"></script> <![endif]-->
+</head>
+
+<body class="main--bg">
+
+	<!-- NAVBAR -->
+    <header id="navbar" role="banner"></header>
+
+	<!-- TODO: Delete these. Currently breaks javascript. :( -->
+    <div class="hidden">
+		<div id="breadcrumbs" data-bind="template:{name:'breadcrumbsNavigationTemplate'}"></div>
+	</div>
+	<!-- // END TODO -->
+
+	<div>
+		<nav class="ModuleMenu" data-bind="template:{name:'materialsSubnavTemplate'}"></nav>
+		<div id="global-alert" class="global-alerts"></div>
+		<div id="content" class="container-base">
+			<div id="driveContent"></div>
+		</div>
+	</div>
+
+	<div id="global-error" class="global-error" style="display:none;" role="alertdialog" aria-labelledby="globalErrorTitle" aria-describedby="globalErrorDesc">
+		<div class="global-error__overlay"></div>
+		<div class="global-error__dialog">
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+					<h1 id="globalErrorTitle"><i class="icon-exclamation-circle" aria-hidden="true"></i> Materials has encountered an error.</h1>
+					<p id="globalErrorDesc" class="lede">Please <a href="http://kb.mit.edu/confluence/display/istcontrib/How+to+clear+your+browsing+history+including+your+cache" target="_blank" title="See article on how to clear the cache and cookies for your browser">clear your cache and cookies</a> and then try reloading your page. If the error persists, click the button below to contact your system administrator.</p>
+
+					<textarea id="bug-report" readonly cols="50" rows="50" data-bind="value:message"></textarea>
+
+					<div class="right">
+						<!-- insert correct mailto: -->
+						<a data-bind="attr:{href:'mailto:helpdesk@mit.edu?subject=Gradebook Error Report&amp;body='+encodeURI(message)}" class="button button--primary" title="Click to open your email client to send report to your system administrator">Send Report via Email</a>
+					</div><!-- /.right -->
+				</div><!-- /.col-md-6 -->
+			</div><!-- /.row -->
+		</div> <!-- /.global-error__dialog -->
+		<button class="global-error__dismiss" onclick="document.getElementById('global-error').style.display='none'" aria-hidden="true"></button>
+	</div><!-- /.global-error -->
+
+	<div id="messageContainer"></div>
+
+	<div class="notices" data-bind="foreach:{data:notifications, afterAdd:fadeIn, beforeRemove:fadeOut}">
+        <div class="notice cf" data-bind="click:$parent.remove">
+            <p data-bind="text:$data"></p>
+            <a href="#" class="notice-close" data-bind="click:$parent.remove, selfClick:{delay:5000}" aria-label="close notification"><i class="icon-remove" aria-hidden="true"></i></a>
+        </div>
+    </div>
+
+	<div id="warnDialog" class="reveal-modal small dialog modal" data-bind="css:{'modal--warning':!isConfirmation(), 'modal--alert':isDeletion()}" role="alertdialog" aria-labelledby="warnModalTitle" aria-describedby="warnModalDesc">
+        <header class="modal__header">
+            <a href="#" class="modal__close" data-bind="click:onClickCancel" role="button" aria-label="close"><i class="icon-remove" aria-hidden="true"></i></a>
+            <h1 id="warnModalTitle" class="modal__title" data-bind="text:title"></h1>
+        </header>
+        <div class="modal__body">
+            <p id="warnModalDesc" data-bind="text:text"></p>
+        </div>
+        <footer class="modal__footer button-group--sorted">
+            <button class="button button--primary" id="warnDialog-button2" data-bind="css:{'button--single':!isConfirmation(), 'button--alert':isDeletion()}, click:onClickConfirm" type="button"><i class="" data-bind="css:{'icon-trash-o':isDeletion(), 'icon-remove':!isDeletion() && !isConfirmation(), 'icon-ok':isConfirmation()}" aria-hidden="true"></i> <span data-bind="text:confirmLabel"></span></button>
+            <button class="button button--secondary" id="warnDialog-button1" data-bind="click:onClickCancel, visible:isConfirmation" type="button"><i class="icon-remove" aria-hidden="true"></i> <span data-bind="text:cancelLabel"></span></button>
+        </footer>
+    </div>
+
+	<div id="copyrightDialog" class="reveal-modal small dialog modal" data-bind="revealVisible:isVisible">
+		<header class="modal__header">
+			<a href="#" class="modal__close" data-bind="click:onClickCancel" role="button" aria-label="close"><i class="icon-remove" aria-hidden="true"></i></a>
+			<h1 class="modal__title">Restricted Use</h1>
+		</header>
+		<div class="modal__body modal__body--pad">
+			<p>Course reading material is designated as copyright-protected.  Material protected by copyright has restrictions on usage and reproduction, which may be subject to Fair Use exceptions for nonprofit, educational purposes under limited circumstances. </p>
+			<p>By clicking "I understand," <b>you acknowledge that the course reading material may be protected by copyright law and its usage may be restricted.</b></p>
+			<p>Note: Depending on the specific licensing agreement of the content you are trying to access, users with a non-MIT email (CAMS account) may not be able to view restricted materials. To gain access to these materials, you will need an MIT Kerberos ID. For more information on accounts, please visit <a href="http://ist.mit.edu/support/accounts/information#reg" target="_blank">here</a> or email <a href="mailto:stellar-help@mit.edu">Customer Support</a>.</p>
+		</div>
+		<footer class="modal__footer modal__footer--dark button-group">
+			<a id="copyrightDialog-button1" href="#" tabindex="1" class="button button--secondary" data-bind="click:onClickCancel"><i class="icon-remove"></i> Cancel</a>
+			<a id="copyrightDialog-button2" href="#" tabindex="1" class="button button--primary" data-bind="click:onClickConfirm"><i class="icon-ok"></i> I understand</a>
+		</footer>
+	</div>
+
+	<section class="global-loading" id="loadingOverlay" style="display: none;" aria-hidden="true">
+		<i class="icon-refresh icon-spin icon-fw global-loading__icon"></i> Loading
+	</section>
+
+	<div id="importContainer"></div>
+
+    <div class="reveal-modal-bg" style="display: none;"></div> <!-- prevents weird foundation js behavior -->
+
+	<!-- Included JS Files (Uncompressed) -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/knockout-2.2.0.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/jquery-ui-1.10.2.custom.min.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/jquery.form.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/knockout-sortable.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/tinymce/js/tinymce/tinymce.min.js?rel=fa15p1e1"></script>
+	<script src="../common/javascript/tinymceBindings.js?rel=fa15p1e1"></script>
+	<script src="../common/javascript/caja-html-sanitizer.js?rel=fa15p1e1"></script>
+	<script src="../common/javascript/analytics.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/jquery.datetimepicker.js?rel=fa15p1e1" type="text/javascript"></script>
+    <script src="../common/javascript/moment.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/utilities.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/view.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/model.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/module.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/navigator.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/navbar.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/access.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/global-alert.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/dropdown.js?rel=fa15p1e1" type="text/javascript"></script>
+    <script src="../common/javascript/tooltip.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/materials.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/javascript/underscore-min.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../common/controls/courseSectionSelector.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="../gradebook/javascript/table.js?rel=fa15p1e1" type="text/javascript"></script>
+    
+	<script src="javascript/model.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="javascript/drive.js?rel=fa15p1e1" type="text/javascript"></script>
+	<script src="javascript/materials.js?rel=fa15p1e1" type="text/javascript"></script>
+
+	<!-- <script src="../common/javascript/foundation/jquery.cookie.js?rel=fa15p1e1"></script> -->
+	<script src="../common/javascript/foundation/jquery.foundation.buttons.js?rel=fa15p1e1"></script>
+	<script src="../common/javascript/foundation/jquery.foundation.forms.js?rel=fa15p1e1"></script>
+	<script src="../common/javascript/foundation/jquery.foundation.mediaQueryToggle.js?rel=fa15p1e1"></script>
+	<script src="../common/javascript/foundation/jquery.foundation.navigation.js?rel=fa15p1e1"></script>
+	<script src="../common/javascript/foundation/jquery.foundation.reveal.js?rel=fa15p1e1"></script>
+	<script src="../common/javascript/foundation/jquery.foundation.tabs.js?rel=fa15p1e1"></script>
+	<script src="../common/javascript/foundation/jquery.foundation.topbar.js?rel=fa15p1e1"></script>
+	<script src="../common/javascript/foundation/jquery.placeholder.js?rel=fa15p1e1"></script>
+
+	<!-- Application Javascript, safe to override -->
+	<script src="../common/javascript/foundation/app.js?rel=fa15p1e1"></script>
+
+	<script>
+		// Global exception handler.
+		window.onerror = function (message, url, linenumber) {
+			LMOD.Common.View.showGlobalError(message,linenumber,url);
+		};
+
+		$(document).ready(function () {
+			var uuid = LMOD.Common.Utilities.getQueryParameter('uuid');
+			// Handle the old gb parameter for backward compatibility.
+			if (!uuid) {
+				uuid = LMOD.Common.Utilities.getQueryParameter('gb');
+				if (uuid && uuid.indexOf('STELLAR:')===0) {
+					uuid = uuid.substr(8);
+				}
+			}
+			var module = new LMOD.Materials.Module(uuid);
+		});
+	</script>
+</body>
+</html>

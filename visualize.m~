@@ -1,0 +1,10 @@
+function visualize(filename)
+%function visualize(filename)
+%function serves for visualization properties 
+
+name = filename(1:end);
+name = strcat(name, 'mat');
+
+disp(name);
+
+load name;
